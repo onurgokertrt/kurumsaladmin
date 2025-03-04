@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Announcement {
+  id String @id @default(uuid()) @db.Uuid
+  title String
+  description String
+  is_active Int
+}
+
+model News {
+  id String @id @default(uuid()) @db.Uuid
+  title String
+  summary String
+  description String
+  is_active Int
+  imageUrl String
+}
+
+model Log {
+  id Int @id @default(autoincrement())
+  action String
+  method String
+  detail String
+  created_at DateTime
+}
+
+model SmsLog {
+  id Int @id @default(autoincrement())
+  phone BigInt
+  code Int
+  is_used Int
+  created_at DateTime
+  @@unique([phone, code, created_at])
+}
+
+model UserLog {
+  id          Int @id @default(autoincrement())
+  clientIP    String
+  token       String
+  action      String
+  service     String
+  username    String
+  apiKey      String
+  created_at  DateTime @default(now())
+}
+
+model Calendar {
+  id                  String @id @default(uuid()) @db.Uuid
+  title               String
+  language            String
+  translation_service Boolean @default(true)
+  description         String?
+  type                String
+  host                String?
+  attendee            String?
+  location            String?
+  event_name          String
+  channel_id          String?
+  start_time          DateTime
+  end_time            DateTime
+  is_active           Boolean @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
+
+model City {
+  id        Int       @id @default(autoincrement())
+  title     String
+  districts District[]
+}
+
+model District {
+  id      Int    @id @default(autoincrement())
+  title   String
+  city    City   @relation(fields: [city_id], references: [id])
+  city_id Int
+}
+
+model Country {
+  id                  String @id @default(uuid()) @db.Uuid
+  title_org           String
+  title_tr            String
+  phone_code          String
+  country_code        String
+  is_active           Boolean @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt @default(now())  
+}
+
+model Bank {
+  id                  String @id @default(uuid()) @db.Uuid
+  title               String
+  eft_code            Int
+  type                String
+  phone               String
+  fax                 String
+  address             String
+  description         String
+  web_site            String
+  is_active           Boolean @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt @default(now())
+}
+
+model Money {
+  id                  String @id @default(uuid()) @db.Uuid
+  currency_code       String
+  name                String
+  symbol              String
+  is_active           Boolean @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt @default(now())
+}
+
+model Campaign {
+  id                  String @id @default(uuid()) @db.Uuid
+  title               String
+  description         String
+  contact             String
+  address             String
+  web_site            String
+  image_url           String
+  logo_url            String
+  start_date          DateTime @default(now())
+  end_date            DateTime @default(now())
+  is_active           Boolean @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @default(now())
+}
